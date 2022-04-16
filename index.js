@@ -6,11 +6,13 @@ const fs = require("fs");
 let dataname = null;
 let start = 1;
 let end = null;
+let saveStep = 1000;
 
 const getStartEnd = () => {
     start = Number(process.argv[process.argv.indexOf('-s') + 1]);
     end = Number(process.argv[process.argv.indexOf('-e') + 1]);
     dataname = process.argv[process.argv.indexOf('-d') + 1]
+    saveStep = process.argv[process.argv.indexOf('-ss') + 1];
 }
 
 getStartEnd();
@@ -32,7 +34,7 @@ let Store = (data = null) => {
         DATA.push(data);
     }
 
-    if (DATA.length >= 30000 || data === null) {
+    if (DATA.length >= saveStep || data === null) {
 
         let fileData = fs.readFileSync(file, "utf8");
 
@@ -42,7 +44,7 @@ let Store = (data = null) => {
 
         fs.writeFileSync(file, JSON.stringify(fileData));
 
-	DATA = [];
+        DATA = [];
     }
 
 }
@@ -59,7 +61,7 @@ let run = async () => {
     let loop = await BigLoop(startBig, endBig, (i, p) => {
 
         process.stdout.write(`Current: ${i.toString()}`)
-	process.stdout.cursorTo(0);
+        process.stdout.cursorTo(0);
 
         let data = {
             number: i.toString(),
